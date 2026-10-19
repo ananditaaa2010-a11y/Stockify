@@ -2,6 +2,219 @@
 @tailwind components;
 @tailwind utilities;
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .sidebar-reopen-control {
+        position: fixed;
+        z-index: 20;
+        top: 5.75rem;
+        left: max(2rem, calc((100vw - 80rem) / 2 + 2rem));
+        width: 2.5rem;
+        height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-0.5rem);
+        transition: opacity 500ms ease, transform 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 500ms;
+    }
+
+    .sidebar-collapsed #sidebar {
+        transform: translateX(-100%);
+        transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sidebar-collapsed #main-content {
+        margin-left: 0;
+    }
+
+    #sidebar {
+        transition: transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #main-content {
+        transition: margin-left 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sidebar-collapsed #main-content .workspace-content {
+        padding-left: 5.75rem;
+        transition: padding-left 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #main-content .workspace-content {
+        transition: padding-left 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sidebar-collapsed .sidebar-reopen-control {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+        pointer-events: auto;
+    }
+}
+
+.loader-mark {
+    display: grid;
+    width: 3.5rem;
+    height: 3.5rem;
+    place-items: center;
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, #f0eaff, #e7f7ef);
+    color: #806bd0;
+    box-shadow: 0 12px 30px rgb(112 92 174 / 14%);
+    animation: stockify-box-float 1.8s ease-in-out infinite;
+}
+
+.loader-mark svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.loader-progress {
+    display: block;
+    width: 8rem;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e9e4f4;
+}
+
+.loader-progress span {
+    display: block;
+    width: 40%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #9a83e2, #68b895);
+    animation: stockify-loader-progress 1.2s ease-in-out infinite;
+}
+
+@keyframes stockify-box-float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-7px) rotate(3deg); }
+}
+
+@keyframes stockify-loader-progress {
+    0% { transform: translateX(-110%); }
+    100% { transform: translateX(260%); }
+}
+
+.stockify-app {
+    background-color: #f7f7fc;
+    color: #3d3a53;
+}
+
+.stockify-app #sidebar,
+.stockify-app header,
+.stockify-app footer,
+.stockify-app .bg-white {
+    border-color: #eae8f2;
+}
+
+.stockify-app #sidebar {
+    background-color: #fff;
+    box-shadow: 8px 0 28px rgb(58 49 97 / 3%);
+}
+
+.stockify-app header {
+    background-color: rgb(255 255 255 / 94%);
+}
+
+.stockify-app [class~="border-slate-100"],
+.stockify-app [class~="border-slate-200"],
+.stockify-app [class~="border-slate-300"] {
+    border-color: #e9e7f0;
+}
+
+.stockify-app [class~="bg-slate-50"] {
+    background-color: #f8f7fc;
+}
+
+.stockify-app [class~="bg-slate-100"] {
+    background-color: #f0eff6;
+}
+
+.stockify-app [class~="text-slate-900"],
+.stockify-app [class~="text-slate-800"] {
+    color: #39364f;
+}
+
+.stockify-app [class~="text-slate-700"],
+.stockify-app [class~="text-slate-600"] {
+    color: #615d76;
+}
+
+.stockify-app [class~="text-slate-500"],
+.stockify-app [class~="text-slate-400"] {
+    color: #87839a;
+}
+
+.stockify-app [class~="bg-teal-800"],
+.stockify-app [class~="bg-teal-900"],
+.stockify-app [class~="bg-teal-700"] {
+    background-color: #7865d3;
+}
+
+.stockify-app [class~="hover:bg-teal-900"]:hover {
+    background-color: #6553bf;
+}
+
+.stockify-app [class~="text-teal-950"],
+.stockify-app [class~="text-teal-900"],
+.stockify-app [class~="text-teal-800"],
+.stockify-app [class~="text-teal-700"] {
+    color: #705dc8;
+}
+
+.stockify-app [class~="bg-teal-50"] {
+    background-color: #f0edff;
+}
+
+.stockify-app [class~="border-teal-800"] {
+    border-color: #8875d9;
+}
+
+.stockify-app [class~="hover:bg-teal-50"]:hover {
+    background-color: #f4f1ff;
+}
+
+.stockify-app [class~="focus:border-teal-700"]:focus {
+    border-color: #9988df;
+}
+
+.stockify-app [class~="focus:ring-teal-100"]:focus {
+    --tw-ring-color: #eeeaff;
+}
+
+.stockify-app [class~="focus:ring-teal-700"]:focus {
+    --tw-ring-color: #8875d9;
+}
+
+.stockify-app [class~="shadow-slate-100\\/70"] {
+    --tw-shadow-color: rgb(104 91 154 / 6%);
+}
+
+.stockify-app main#main-content > div {
+    animation: stockify-content-arrive 220ms ease-out both;
+}
+
+@keyframes stockify-content-arrive {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loader-mark,
+    .loader-progress span,
+    .stockify-app main#main-content > div {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+    }
+}
+
 /* styles.css atau app.css */
 @layer utilities {
     .text-primary-700 {

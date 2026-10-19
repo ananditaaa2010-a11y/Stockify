@@ -7,6 +7,44 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Stockify
+
+Stockify is a Laravel inventory application with role-specific workspaces for Admin, Manajer Gudang, Staff Gudang, and Customer. Admins manage products, categories, reusable product-attribute definitions, suppliers, accounts, access roles, and application settings. Managers create products, record stock movements, monitor balances, and perform stock counts. Warehouse staff record incoming and outgoing transactions, explicitly mark receipts as inspected or issues as prepared, then confirm the transaction; only confirmation changes the stock balance. Staff can also record stock counts that immediately adjust the stock balance. Admins and Managers can review stock, transaction, and user activity reports.
+
+### Local development
+
+1. Install PHP/Composer and Node.js dependencies with `composer install` and `npm install`.
+2. Configure `.env` with your database connection, then run `php artisan migrate --seed`.
+3. In one terminal run `npm run dev`; in another run `php artisan serve`.
+4. Open the URL printed by Laravel (normally `http://127.0.0.1:8000`). Keep both commands running during development.
+5. If using an uploaded application logo, run `php artisan storage:link` once.
+
+The development seeder creates demo staff accounts: `admin@stockify.test` / `Admin123`, `manager@stockify.test` / `Manager1`, and `staff@stockify.test` / `Staff123`. Customer accounts are not seeded; create them through the public registration page. Do not use these demo credentials in production. To keep Laravel Debugbar out of the page, set `DEBUGBAR_ENABLED=false` in `.env` and restart the Laravel server.
+
+For production assets, run `npm run build`.
+
+### Product CSV import and export
+
+Only Admins can download the CSV template, import products, or export the product catalog. The import accepts up to 1,000 rows in UTF-8 CSV (maximum 2 MB). Required columns are `name`, `sku`, `category`, `supplier`, `purchase_price`, `selling_price`, and `minimum_stock`. Optional columns are `description`, `initial_stock` (defaults to zero), and `attributes`.
+
+Category and supplier values must match existing names (case-insensitive). Attributes use `Name:Value;Name:Value`, for example `Color:Black;Size:M`. Prices use plain decimal numbers without currency symbols or thousands separators. Each valid row is imported independently; invalid rows are reported by CSV line number. A positive initial stock is recorded as a confirmed incoming stock transaction so the stock ledger remains auditable. Exported CSVs contain the same columns, with `initial_stock` populated from the current calculated balance.
+
+Application workflows are organized through services and repositories: product management uses `ProductService`/`ProductRepository`, stock movements use `StockTransactionService`/`StockTransactionRepository`, dashboards and reports use dedicated query repositories, and category, supplier, user, settings, and activity persistence are likewise handled behind repositories.
+
+The authenticated Stockify layout adapts the Flowbite Admin Dashboard shell (fixed top navigation, role-aware sidebar, and responsive content area); demo-only navigation and placeholder widgets from the template are not exposed as Stockify features. Flowbite is initialized from the JavaScript entry point used by this layout.
+
+Role boundaries combine the "Role" responsibilities with the detailed workflows: Admin manages all application data and settings; Managers create products, record stock transactions, view reports, and perform stock counts; warehouse Staff record and confirm incoming/outgoing work, can create an unregistered product during receipt, and may record stock counts. Only Admins can edit or delete products, define reusable product attributes, manage users, import/export products, or change application settings. Managers and Staff choose from the definitions when entering product attributes.
+
+Customers register from `/register`; the server always assigns the `Customer` role and stores the account in the `users` database table. Admins cannot create Customer accounts or change an account's Customer role in **Pengguna & hak akses**. To assign the role to an existing account directly in MySQL, an authorized database operator can run `UPDATE users SET role = 'Customer' WHERE email = 'customer@example.com';`. Never store a plain-text password in SQL; use the registration page or a Laravel-generated password hash.
+
+Customers browse product cards in **Belanja produk** and open a product detail page to choose one of three payment methods: manual bank transfer, cash at store pickup, or COD (cash on delivery). Transfer orders can include a transaction reference and optional proof (a JPG, PNG, or WebP receipt/screenshot, up to 2 MB). The displayed transfer number is an obvious demo placeholder (`12345678901234567890`), not a real bank account; do not send money to it. COD orders require a delivery address. Cash orders can omit a note. Stock is reserved immediately when an order is created, and an Admin verifies a transfer or confirms cash has been received before marking an order paid. A rejected payment restores the stock. Customers can leave or update feedback for verified purchases and request full or partial refunds. Admins review payment and refund requests from **Pesanan & pembayaran** and **Kelola refund**. Approving a refund records the refund and restores stock; money is returned manually outside the application. No payment gateway or shipping integration is configured.
+
+Product images can be uploaded as JPG, PNG, or WebP files (up to 2 MB) and are stored on Laravel's public disk. Incoming stock receipts can select the supplier for that specific transaction; when none is selected, the product's assigned supplier is recorded.
+
+The five sample products use demo images in `storage/app/public/products`. Run `php artisan storage:link` to make uploaded and bundled public-disk images available to the browser.
+
+Admins can update the application name, short description, and logo from Settings. Admins and Managers can review activity reports, while Staff can access stock and transaction tasks.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

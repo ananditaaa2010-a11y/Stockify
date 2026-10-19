@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => rtrim(parse_url((string) env('APP_URL'), PHP_URL_PATH) ?: '', '/') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
